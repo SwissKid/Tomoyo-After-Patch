@@ -1,4 +1,9 @@
+0.5
+Adding SEEN.TXT rather than SEEN0628.TXT
 
+0.4
+Doing images
+Did OP hardsub
 
 
 0.3

@@ -1,0 +1,28 @@
+Need to move the font into directory. Probably ~/.wine/drive_c/windows/Fonts/
+Need to isntall from the ISO. The files moved are:
+	BGM directory
+	DAT directory
+	DT00.dll
+	Gameexe.ini
+	g00
+	koe
+	gan
+	manual
+	mov
+	RealLive.exe
+	seen.txt
+	sys
+	tomoyo.ico
+	wav
+
+Don't know how to show a progress bar with cp, rsync won't show as a whole,
+only individually.
+Screenshots: http://imgur.com/a/krLFi
+
+
+Tested on:
+	Gentoo:
+		Awesomewm
+	Archlinux:
+		Gnome3
+

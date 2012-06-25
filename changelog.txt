@@ -1,0 +1,8 @@
+
+
+
+0.3
+Creating changelog
+Text changes
+Adding in a progress bar for install <-- man this is cool
+

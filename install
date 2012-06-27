@@ -81,7 +81,7 @@ fontdir=$(zenity --file-selection --directory --title="Font Directory" --filenam
 if [ "$?" -eq "1" ];
    then exit 0 ;
 fi
-cp msgothic.ttf "$fontdir"
+cp msgothic.ttc "$fontdir"
 
 
 #Final time asking
@@ -115,9 +115,9 @@ if [ -e ~/Desktop ];
    zenity --question --text="Do you want a desktop launcher to be installed to run Tomoyo After?"
    if [ "$?" -eq "0" ];
       then
-      echo -e '#!/bin/bash' " \nrlvm --font \042"$fontdir/msgothic.ttf"\042 \042"$tomodir"\042 " > ~/Desktop/TomoyoAfter
+      echo -e '#!/bin/bash' " \nrlvm --font \042"$fontdir/msgothic.ttc"\042 \042"$tomodir"\042 " > ~/Desktop/TomoyoAfter
       chmod +x ~/Desktop/TomoyoAfter
-      zenity --info --text="A shortcut to run Tomoyo After has been placed on your desktop. If you wish to run Tomoyo After via the command line please execute: \n rlvm --font \042 $fontdir/msgothic.ttf\042 \042 $tomodir \042 "
+      zenity --info --text="A shortcut to run Tomoyo After has been placed on your desktop. If you wish to run Tomoyo After via the command line please execute: \n rlvm --font \042 $fontdir/msgothic.ttc\042 \042 $tomodir \042 "
    fi
 fi
 

@@ -26,3 +26,8 @@ Tested on:
 	Archlinux:
 		Gnome3
 
+
+LINUX SPECIAL NOTES (TO GO WITH RELEASE):
+
+The "choose font" doesn't work in game, you specify in the command line before
+you run the game.

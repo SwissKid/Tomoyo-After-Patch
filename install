@@ -91,7 +91,7 @@ if [ "$?" -eq 1 ];
 fi
 ##WILL NEED EDITING FOR THE REAL FILES
 if [ -e "$tomodir/Gameexe.ini" ]; then
-   m="bgm dat gan koe mov sys wav"
+   m="bgm dat gan koe mov sys wav Seen.txt"
    for i in `echo $m`; do
       if [ -e "$tomodir/$i" ]; then
          j=$(echo $i | tr '[:lower:]' '[:upper:]' )

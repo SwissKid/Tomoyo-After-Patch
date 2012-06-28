@@ -1,3 +1,5 @@
+OBSELETE AFTER GIT
+
 0.5
 Adding SEEN.TXT rather than SEEN0628.TXT
 

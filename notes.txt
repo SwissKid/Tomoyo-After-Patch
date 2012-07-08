@@ -15,9 +15,9 @@ Need to isntall from the ISO. The files moved are:
 	tomoyo.ico
 	wav
 
-Don't know how to show a progress bar with cp, rsync won't show as a whole,
-only individually.
+Don't know how to show a progress bar with cp, rsync won't show as a whole, only individually.
 Screenshots: http://imgur.com/a/krLFi
+FIXED
 
 
 Tested on:
@@ -31,3 +31,6 @@ LINUX SPECIAL NOTES (TO GO WITH RELEASE):
 
 The "choose font" doesn't work in game, you specify in the command line before
 you run the game.
+
+
+

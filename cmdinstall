@@ -1,0 +1,139 @@
+#!/bin/bash
+function warning(){
+    echo -ne "\033[41;1m WARNING: " >&2
+    echo "$@ \033[01;0m" >&2
+}
+function lowerthis(){
+   echo $@ | tr [:upper:] [:lower:]
+}
+which rlvm > /dev/null
+if [ "$?" = "1" ];
+   then
+   warning "RLVM was not found installed on this system. Please install it 
+before attempting to install the patch, as the patch won't work without
+it.\nRLVM can be found at http://www.elliotglaysher.org/rlvm/"
+fi
+echo -ne "Do you already have Tomoyo After installed?"
+read installed
+installed=$(lowerthis $installed)
+if [[ "$installed" == no ]] | [[ "$installed" == n ]];
+   then
+   echo "Please specify the location of 'Tomoyo After ~It's a Wonderful Life~'"
+   read installdisc
+   if [ -f "$installdisc/Seen.txt" ]; then
+      echo "Please specify the directory Tomoyo After should be installed into
+\n This creates a new directory of 'Tomoyo After' under whatever directory
+you specify"
+   else
+      warning "Your install location seems to be incorrect or you have a bad disc."
+      exit 1
+   fi
+   read installloc
+   if [ -n "$installloc" ];
+      then 
+      warning "No location given."
+      exit 1
+   fi
+   echo "Tomoyo After will now be installed. This may take a while. Press OK to start the installtion."
+   running=1
+   mkdir "$installloc/Tomoyo After/";
+   chmod +w "$installloc/Tomoyo After";
+   for i in `echo bgm dat dt00.dll Gameexe.ini g00 koe gan manual mov sys wav Seen.txt Tomoyo.ico`; 
+      do cp -r "$installdisc/$i" "$installloc/Tomoyo After/" &
+   done
+   while [ $running -eq 1 ];
+      do
+      chmod +w -R "$installloc/Tomoyo After";
+      some=$(sed -e "s/ .*$//" <<< `du -s "$installloc/Tomoyo After"`)
+      let " progress = 100 * some / 2146664"
+      echo -n "$progress"
+      if [ "$progress" -eq 100 ]
+	 then running=0
+      fi
+      sleep 1
+   done
+   preinstall=1
+   else
+	preinstall=0
+fi;
+#End Install Disc
+#Getting the installation directoy
+if [ "$preinstall" -eq 1 ]; then
+   tomodir="$installloc/Tomoyo After"
+else
+   echo -e "Please specify the location of your Tomoyo After installation
+(If installed through wine it should be ~/.wine/drive_c/KEY/Tomoyo After/"
+   read tomodir
+   #probably a cleaner way to do this ignoring capitilization
+   if [ -e "$tomodir/Gameexe.ini" ]; then
+      mv "$tomodir/Gameexe.ini" "$tomodir/GAMEEXE.INI"
+   else 
+      if [ ! -e "$tomodir/GAMEEXE.INI" ]; then
+#Failed check
+	 warning "This installer cannot find Gameexe.ini or GAMEEXE.INI inside
+	 $tomodir. Please doublecheck that you specified the correct
+	 directory."
+	 exit 1
+      fi
+   fi
+fi
+chmod +rw -R "$tomodir"
+#End of Installation Directory finding, now to copy the patch
+#Font first
+echo -e "A font chosen by the designers of the patch will now be placed on your
+system. Please choose a directory for it to be placed into. \n If no directory
+is specified the font will be placed in the same directory as Tomoyo After"
+read fontdir
+if [ -n "$fontdir" ];
+   then
+   fontdir=$tomodir
+fi
+cp msgothic.ttc "$fontdir"
+
+
+#Final time asking
+echo -e "Do you want to continue installing the patch? \n (Last chance to back out)"
+read backout
+if [ -n "$backout" ]
+   then exit 1;
+fi
+##WILL NEED EDITING FOR THE REAL FILES
+##ASSUMING A CONSTANT NAMING SCHEME. CAN BE BROKEN
+if [ -e "$tomodir/Seen.txt" ]; then
+   m="bgm dat gan koe mov sys wav Seen.txt"
+   for i in `echo $m`; do
+      if [ -e "$tomodir/$i" ]; then
+	 j=$(echo $i | tr '[:lower:]' '[:upper:]' )
+	 mv "$tomodir/$i" "$tomodir/$j"
+      fi
+   done
+   chmod +rw -R "$tomodir"
+   m="SEEN* rlBabel.dll 1.3.5.4.map GAMEEXE.INI G00 MOV"
+   for i in `echo $m`;
+      do cp $i "$tomodir" -r
+   done
+fi
+
+#Nice desktop installer
+##TO DO make it purty
+if [ -e ~/Desktop ];
+   then
+   echo "Do you want a desktop launcher to be installed to run Tomoyo After?"
+   read desktopinstaller
+   if [ ! -n "$desktopinstaller" ]
+      then
+      echo -e '#!/bin/bash' " \nrlvm --font \042"$fontdir/msgothic.ttc"\042 \042"$tomodir"\042 " > ~/Desktop/TomoyoAfter
+      chmod +x ~/Desktop/TomoyoAfter
+      echo "A shortcut to run Tomoyo After has been placed on your desktop. If
+you wish to run Tomoyo After via the command line please execute: \n rlvm
+      --font \042 $fontdir/msgothic.ttc\042 \042 $tomodir \042 "
+   fi
+fi
+
+
+echo "Thank you for using Doki\'s Tomoyo After installer!"
+#EOF
+exit 0
+
+
+# vim: set sw=3 tw=80  #

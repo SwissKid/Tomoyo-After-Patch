@@ -1,5 +1,6 @@
 #!/bin/bash
 ##This is gonna be where I start writing what would replace a zenity line
+##STILL NEED TO DO YES/NO
 
 ##Erorr
 #zenit --error
@@ -8,49 +9,61 @@
 
 
 function dalert() {
-set bigtext
-osascript << EOT
+/usr/bin/osascript << EOT
 tell app "System Events"
-    display alert "MAIN BIG TEXT"
+    activate
+    display alert "$1"
 	as warning
-	message "Little info text"
+	message "$2"
 end tell
 EOT
 }
 
 #zenity --file-selection --directory
 ##DONT KNOW IF THIS WILL WORK
-RETURN=$(/usr/bin/osascript << EOT
-tell app "System Events"
-    set NAMEFOLDER to quoted form of POSIX path of (choose folder with prompt "WORDS" default location alias "Volumes")
-    get NAMEFOLDER
-end tell
-EOT)
+#RETURN=$(/usr/bin/osascript << EOT
+#tell app "System Events"
+#    set NAMEFOLDER to quoted form of POSIX path of (choose folder with prompt "WORDS" default location alias "Volumes")
+#    get NAMEFOLDER
+#end tell
+#EOT)
 ## MIGHT BE ABLE TO
-RETURN=$(/usr/bin/osascript << EOT
+function choosefolder() {
+if [ -n "$1" ]
+/usr/bin/osascript << EOT
 tell app "System Events"
-    quoted form of POSIX path of (choose folder with prompt "WORDS" default location alias "Volumes")
+    activate
+    quoted form of POSIX path of (choose folder with prompt "$1" default location alias "$2")
 end tell
-EOT)
+EOT
+else
+/usr/bin/osascript << EOT
+tell app "System Events"
+    activate
+    quoted form of POSIX path of (choose folder with prompt "$1" default location alias (path to home))
+end tell
+EOT
+fi
+}
 ##GONNA LEAVE THESE HERE!!!
 ##DESKTOP
-DesktopFolder=$(/usr/bin/osascript << EOT
+deskfolder=$(/usr/bin/osascript << EOT
 tell app "System Events"
-    path to desktop
+    quoted form of POSIX path of (path to desktop)
 end tell
 EOT)
 
 ##Fonts
-FontsFolder=$(/usr/bin/osascript << EOT
+fontdir=$(/usr/bin/osascript << EOT
 tell app "System Events"
-    path to fonts
+    quoted form of POSIX path of (path to fonts)
 end tell
 EOT)
 
 which rlvm > /dev/null
 if [ "$?" = "1" ];
    then
-   zenity --error --text="RLVM was not found installed on this system. Please install it before attempting to install the patch, as the patch won't work without it.\nRLVM can be found at http://www.elliotglaysher.org/rlvm/";
+   dalert "RLVM was not found installed on this system." "Please install it before attempting to install the patch, as the patch won't work without it.\nRLVM can be found at http://www.elliotglaysher.org/rlvm/"
 fi
 zenity --question \
 --text="Do you already have Tomoyo After installed?"
@@ -58,14 +71,14 @@ preinstall=$?
 #install disc
 if [ $preinstall -eq 1 ]; then
    zenity --info --text="Please specify the location of 'Tomoyo After ~It's a Wonderful Life~'"
-   installdisc=$(zenity --file-selection --directory --title="Tomoyo After Install Disc");
+   installdisc=$(choosefolder "Disc Locatation" "Volumes")
    if [ -f "$installdisc/Seen.txt" ]; then
    zenity --info --text="Please specify the directory Tomoyo After should be installed into \n This creates a new directory of 'Tomoyo After' under whatever directory you specify";
    else
    zenity --info --text="Your install location seems to be incorrect or you have a bad disc."
    exit 0
    fi
-   installloc=$(zenity --file-selection --directory --title="Destination Directory");
+   installloc=$(choosefolder "Installation Directory")
    if [ $? -eq 1 ];
    then exit 0
    fi
@@ -106,8 +119,9 @@ fi;
 if [ $preinstall -eq 1 ]; then
    tomodir="$installloc/Tomoyo After"
 else
-   zenity --info --text="Please specify the location of your Tomoyo After installation \n (If installed through wine it should be ~/.wine/drive_c/KEY/Tomoyo After/"
-   tomodir=$(zenity --file-selection --directory --title="Installed Directory");
+   ## NEED TO DISPLAY MESSAGE, NEW TODO
+    "Please specify the location of your Tomoyo After installation \n (If installed through wine it should be ~/.wine/drive_c/KEY/Tomoyo After/"
+   tomodir=$(choosefolder "Installation of Tomoyo After")
    #probably a cleaner way to do this ignoring capitilization
    if [ -e "$tomodir/Gameexe.ini" ]; then
    	mv "$tomodir/Gameexe.ini" "$tomodir/GAMEEXE.INI"
@@ -116,19 +130,17 @@ else
 	   sleep 0
 	else
 #Failed check
-	   zenity --info --text="This installer cannot find Gameexe.ini or GAMEEXE.INI inside $tomodir. Please doublecheck that you specified the correct directory."
-	   exit 0
+	   daleter "Gameexe.ini Not Found" "This installer cannot find Gameexe.ini or GAMEEXE.INI inside $tomodir. Please doublecheck that you specified the correct directory."
+	   exit 1
 	fi
    fi
 fi
 chmod +rw -R "$tomodir"
 #End of Installation Directory finding, now to copy the patch
 #Font first
-zenity --info --text="A font chosen by the designers of the patch will now be placed on your system. Please choose a directory for it to be placed into."
-fontdir=$(zenity --file-selection --directory --title="Font Directory" --filename=~/.rlvm/)
-if [ "$?" -eq "1" ];
-   then exit 0 ;
-fi
+##Mac users can just have it installed, it won't hurt them
+
+
 cp msgothic.ttc "$fontdir"
 
 
@@ -158,14 +170,12 @@ fi
 
 #Nice desktop installer
 ##TO DO make it purty
-if [ -e ~/Desktop ];
-   then
-   zenity --question --text="Do you want a desktop launcher to be installed to run Tomoyo After?"
-   if [ "$?" -eq "0" ];
-      then
-      echo -e '#!/bin/bash' " \nrlvm --font \042"$fontdir/msgothic.ttc"\042 \042"$tomodir"\042 " > ~/Desktop/TomoyoAfter
-      chmod +x ~/Desktop/TomoyoAfter
-      zenity --info --text="A shortcut to run Tomoyo After has been placed on your desktop. If you wish to run Tomoyo After via the command line please execute: \n rlvm --font \042 $fontdir/msgothic.ttc\042 \042 $tomodir \042 "
+zenity --question --text="Do you want a desktop launcher to be installed to run Tomoyo After?"
+if [ "$?" -eq "0" ];
+    then
+    echo -e '#!/bin/bash' " \nrlvm --font \042"$fontdir/msgothic.ttc"\042 \042"$tomodir"\042 " > $deskfolder/TomoyoAfter
+    chmod +x ~/Desktop/TomoyoAfter
+    zenity --info --text="A shortcut to run Tomoyo After has been placed on your desktop. If you wish to run Tomoyo After via the command line please execute: \n rlvm --font \042 $fontdir/msgothic.ttc\042 \042 $tomodir \042 "
    fi
 fi
 
@@ -175,4 +185,4 @@ zenity --info --text="Thank you for using Doki\'s Tomoyo After installer!"
 exit 0
 
 
-# vim: tw=80 sw=4 : 
+# vim: tw=0 sw=4 : 

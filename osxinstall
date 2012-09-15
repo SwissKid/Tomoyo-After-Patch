@@ -4,13 +4,19 @@
 ##Erorr
 #zenit --error
 #2 types, warning and info, i want warning for error
-RETURN=$(osascript << EOT
+##GONNA SET IT UP AS FUCTIONS
+
+
+function dalert() {
+set bigtext
+osascript << EOT
 tell app "System Events"
     display alert "MAIN BIG TEXT"
 	as warning
 	message "Little info text"
 end tell
-EOT)
+EOT
+}
 
 #zenity --file-selection --directory
 ##DONT KNOW IF THIS WILL WORK

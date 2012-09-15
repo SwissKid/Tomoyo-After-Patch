@@ -1,4 +1,46 @@
 #!/bin/bash
+##This is gonna be where I start writing what would replace a zenity line
+
+##Erorr
+#zenit --error
+#2 types, warning and info, i want warning for error
+RETURN=$(osascript << EOT
+tell app "System Events"
+    display alert "MAIN BIG TEXT"
+	as warning
+	message "Little info text"
+end tell
+EOT)
+
+#zenity --file-selection --directory
+##DONT KNOW IF THIS WILL WORK
+RETURN=$(/usr/bin/osascript << EOT
+tell app "System Events"
+    set NAMEFOLDER to quoted form of POSIX path of (choose folder with prompt "WORDS" default location alias "Volumes")
+    get NAMEFOLDER
+end tell
+EOT)
+## MIGHT BE ABLE TO
+RETURN=$(/usr/bin/osascript << EOT
+tell app "System Events"
+    quoted form of POSIX path of (choose folder with prompt "WORDS" default location alias "Volumes")
+end tell
+EOT)
+##GONNA LEAVE THESE HERE!!!
+##DESKTOP
+DesktopFolder=$(/usr/bin/osascript << EOT
+tell app "System Events"
+    path to desktop
+end tell
+EOT)
+
+##Fonts
+FontsFolder=$(/usr/bin/osascript << EOT
+tell app "System Events"
+    path to fonts
+end tell
+EOT)
+
 which rlvm > /dev/null
 if [ "$?" = "1" ];
    then
@@ -125,3 +167,6 @@ fi
 zenity --info --text="Thank you for using Doki\'s Tomoyo After installer!"
 #EOF
 exit 0
+
+
+# vim: tw=80 sw=4 : 

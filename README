@@ -1,3 +1,18 @@
 This will be a cool readme eventually.
 About to be v3
 
+Mac (OS X) Installation
+Install Zenity through Macports
+-You'll need XCode (App Store) and Apple's 'Command Line Developer Tools' (http://connect.apple.com/) to install Macports
+
+Once Zenity is installed run the following in Terminal:
+chmod +x osxinstall
+./osxinstall
+
+The installer will run.
+If the game has already been installed (How'd you do that with a Mac?), then select the installation directory.
+
+If not, then select the disc (Go up directories until you're at the top, then open the Volumes folder).
+Choose where to install the game - You can pick a name, but the installer will ignore it and name it "Tomoyo After".
+You can now download and install rlvm (http://www.elliotglaysher.org/rlvm/) and run the game by selecting the installation directory!
+The pictures have been translated, so you can enjoy knowing what date it is.

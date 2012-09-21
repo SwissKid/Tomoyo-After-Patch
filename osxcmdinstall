@@ -6,13 +6,6 @@ function warning(){
 function lowerthis(){
    echo $@ | tr [:upper:] [:lower:]
 }
-which rlvm > /dev/null
-if [ "$?" = "1" ];
-   then
-   warning "RLVM was not found installed on this system. Please install it 
-before attempting to install the patch, as the patch won't work without
-it.\nRLVM can be found at http://www.elliotglaysher.org/rlvm/"
-fi
 echo -ne "Do you already have Tomoyo After installed?"
 read installed
 installed=$(lowerthis $installed)
@@ -55,8 +48,8 @@ you specify"
 #      sleep 1
 #   done
    preinstall=1
-   else
-	preinstall=0
+else
+    preinstall=0
 fi;
 #End Install Disc
 #Getting the installation directoy
@@ -94,11 +87,14 @@ cp msgothic.ttc "$fontdir"
 
 
 #Final time asking
-echo -e "Do you want to continue installing the patch? \n (Last chance to back out)"
-read backout
-if [ -z "$backout" ] || [[ ${backout,,} == n. ]]
-   then exit 1;
-fi
+#Macs can't have this, as they aren't good enough
+#(Mostly kidding, more like they don't have bash v4 and I don't want to write
+#it for non-bashv4 clients)
+#echo -e "Do you want to continue installing the patch? \n (Last chance to back out)"
+#read backout
+#if [ -z "$backout" ] || [[ ${backout,,} == n. ]]
+#   then exit 1;
+#fi
 ##WILL NEED EDITING FOR THE REAL FILES
 ##ASSUMING A CONSTANT NAMING SCHEME. CAN BE BROKEN
 if [ -e "$tomodir/Seen.txt" ]; then
@@ -118,23 +114,23 @@ fi
 
 #Nice desktop installer
 ##TO DO make it purty
-if [ -e ~/Desktop ];
-   then
-   echo "Do you want a desktop launcher to be installed to run Tomoyo After?"
-   read desktopinstaller
-   if [ -z "$desktopinstaller" ]
-      then
-      #Won't work for mac
-      echo -e '#!/bin/bash' " \nrlvm --font \042"$fontdir/msgothic.ttc"\042 \042"$tomodir"\042 " > ~/Desktop/TomoyoAfter
-      chmod +x ~/Desktop/TomoyoAfter
-      echo "A shortcut to run Tomoyo After has been placed on your desktop. If
-you wish to run Tomoyo After via the command line please execute: \n rlvm
-      --font \042 $fontdir/msgothic.ttc\042 \042 $tomodir \042 "
-   fi
-fi
+#if [ -e ~/Desktop ];
+#   then
+#   echo "Do you want a desktop launcher to be installed to run Tomoyo After?"
+#   read desktopinstaller
+#   if [ -z "$desktopinstaller" ]
+#      then
+#      #Won't work for mac
+#      echo -e '#!/bin/bash' " \nrlvm --font \042"$fontdir/msgothic.ttc"\042 \042"$tomodir"\042 " > ~/Desktop/TomoyoAfter
+#      chmod +x ~/Desktop/TomoyoAfter
+#      echo "A shortcut to run Tomoyo After has been placed on your desktop. If
+#you wish to run Tomoyo After via the command line please execute: \n rlvm
+#      --font \042 $fontdir/msgothic.ttc\042 \042 $tomodir \042 "
+#   fi
+#fi
 
-
-echo "Thank you for using Doki\'s Tomoyo After installer!"
+echo "In order to play Tomoyo After, you must install RLVM, and choose $tomodir when prompted."
+echo "Thank you for using Doki's Tomoyo After installer!"
 #EOF
 exit 0
 

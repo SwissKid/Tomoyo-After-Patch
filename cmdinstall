@@ -17,7 +17,7 @@
 #	Tomoyo After with Zenity
 #######################################
 
-##Zenity Functions (to make everything faster)
+##Bash Functions (to make everything faster)
 #non critical error
 function error() {
      echo -ne "\033[41;1m WARNING: " >&2
@@ -96,7 +96,7 @@ if [[ $preinstall -eq 0 ]]; then
 	do
 	    cp -r "$installdisc/$i" "$installloc/Tomoyo After/" &
 	done
-    running=true
+    (running=true
     while [[ $running == true ]]
     do
 	chmod +w -R "$installloc/Tomoyo After";
@@ -106,7 +106,8 @@ if [[ $preinstall -eq 0 ]]; then
 	if [[ "$progress" -eq 100 ]]
 	    then running=false
 	fi
-    done
+    done)
+    zeninfo "Your Tomoyo After installation is located at $installloc/Tomoyo After/. \n Press OK to continue to installing the patch." || zencancel
     tomodir="$installloc/Tomoyo After"
 #End Install Disc
 else

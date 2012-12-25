@@ -32,5 +32,6 @@ LINUX SPECIAL NOTES (TO GO WITH RELEASE):
 The "choose font" doesn't work in game, you specify in the command line before
 you run the game.
 
+Something needs to happen to allow me to play the movie in rlvm... Maybe fork?
 
-
+Something with the font needs to happen: WHAT WAS THAT COMMAND?!?!

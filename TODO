@@ -1,4 +1,8 @@
 ALL:
-Option to go to www.key15th.com after install 
-Icons
+	Option to go to www.key15th.com after install 
+	Icons
+
+LINUX:
+	Mesh non-zenity + zenity: Just make the functions change depending upon
+    style of execution
 

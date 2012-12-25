@@ -116,7 +116,7 @@ Known issues/unfixed bugs:
 * Linux and Mac: D&T doesn't work. This has to do with the fact RLVM was not
  made for it. It hasn't been fixed yet, and it won't be fixed for a while. It
  requires the reprogramming of that entire section. If you wish to do that,
- feel free to try and redo it.
+ feel free to try and redo it..... It's a pain.
 
 * Font selection:  The default font used is MS Gothic with bolding and shadows
 enabled. The font options are not currently functioning properly.  Attempts to

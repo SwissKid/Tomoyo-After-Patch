@@ -1,3 +1,8 @@
 TO OTHER DEVELOPERS/DOKI:
-To update the patch with the newest files just replace SEEN.TXT and the files in G00/MOV with what's needed.
-If you modify any files outside of G00/MOV the install script will need to be modified, the m variable that is currently assigned to 'SEEN* rlBabel.dll 1.3.5.4.map GAMEEXE.INI G00 MOV' on line 105 will need to have the new filder names added.
+    To update the patch with the newest files just replace SEEN.TXT and the
+files in G00/MOV with what's needed.
+
+    If you modify any files outside of G00/MOV the install script will need to
+be modified, the for loop that is currently assigned to 'SEEN* rlBabel.dll
+1.3.5.4.map GAMEEXE.INI G00 MOV' will need to have the new filder
+names added.

@@ -1,10 +1,12 @@
+LINUX AND MAC INSTALLATION INSTRUCTIONS
 
 Linux Instructions:
 If GTK is installed (on most systems this is true), first attempt to run the
 "gtkinstall." If that doesn't work, try the cmdinstall. If that doesn't work
 either, follow the manual installation instructions.
 
-If GTK is not installed, it should be, but you can try the cmdinstall.
+If GTK is not installed, it should be, but you can try the cmdinstall, it's
+not terrible, but it's not necessarily perfect
 
 OSX Instructions:
 The osxinstall script is not ready quite yet, though you're welcome to try it.

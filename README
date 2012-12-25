@@ -1,18 +1,320 @@
-This will be a cool readme eventually.
-About to be v3
+Doki Fansubs
 
-Mac (OS X) Installation
-Install Zenity through Macports
--You'll need XCode (App Store) and Apple's 'Command Line Developer Tools' (http://connect.apple.com/) to install Macports
+Linux and Mac Users:
 
-Once Zenity is installed run the following in Terminal:
-chmod +x osxinstall
-./osxinstall
+This readme is created for Windows users, so not all of it will pertain to Linux
+and Mac users. The Installation Instructions can be found in the "Install" file.
 
-The installer will run.
-If the game has already been installed (How'd you do that with a Mac?), then select the installation directory.
+_________________________________________________________________
 
-If not, then select the disc (Go up directories until you're at the top, then open the Volumes folder).
-Choose where to install the game - You can pick a name, but the installer will ignore it and name it "Tomoyo After".
-You can now download and install rlvm (http://www.elliotglaysher.org/rlvm/) and run the game by selecting the installation directory!
-The pictures have been translated, so you can enjoy knowing what date it is.
+Introduction:
+
+This readme file contains important information about the Tomoyo After
+Translation Patch. Please read it before you start playing.  This project has
+been the cumulative effort of the a hard work of many, and we hope that you
+enjoy it.  
+_________________________________________________________________
+
+License and Disclaimer:
+
+This English translation is released in good faith that it will not be abused.
+By installing this software you agree to NOT distribute any part of this
+translation together with an illegal copy of Tomoyo After, or any part thereof.
+You also agree to NOT use any part of this translation to help stimulate,
+promote or encourage the distribution of illegal copies of Tomoyo After, or any
+part thereof. The Tomoyo After translations team asks that you please buy the
+game when you can. 
+
+By installing this software you also agree to NOT modify or redistribute any
+part of this software without previous written consent from Tomoyo After translation staff and Doki Fansubs.
+
+This software contains scenes not suitable for minors. By installing this
+software, you agree that you are of legal age to view adult content according to
+laws in your country and that you are not offended by reading and watching
+scenes containing verbal, physical and sexual violence and detailed erotic
+acts.
+
+This software is provided "as is". By installing this software you agree to not
+hold Key/Visual Arts or the Tomoyo After English translation staff liable for
+any ill effects or damages that could occur through the installation or use of
+this software. This translation is a fan-product. It is in no way approved or
+endorsed by Key/Visual Arts or any person, company or organization who owns the
+rights to Tomoyo After or any part thereof. No guarantees or warranties of any
+kind are provided in relation to this translation or any part thereof.
+
+_________________________________________________________________
+
+This patch includes a translation of:
+
+* Tomoyo After main game text
+* Special scripted scene text images
+* Menus
+* Dungeons and Takafumi's minigame text
+* Dungeons and Takafumi's minigame images
+
+_________________________________________________________________
+
+Playing the game:
+
+        Left click/Enter/x:                      Select Choice/Advanced Text
+        Right click/Esc/Backspace/z:             Go back/Menu
+        Down arrow:                              Highlight next choice
+        Up arrow:                                Highlight Previous choice
+        Mousewheel-up:                           Show log/Scroll log up
+        Mousewheel-down:                         Scroll log down
+        Spacebar:                                Show/Hide Interface
+        k:                                       Replay voice for current line
+        Alt+Enter:                               Full screen/Window mode toggle
+        Alt+F4                                   End game
+        Ctrl:                                    Skip until the key is released
+
+_________________________________________________________________
+
+Known issues/unfixed bugs:
+
+* Linux and Mac: D&T doesn't work. This has to do with the fact RLVM was not
+ made for it. It hasn't been fixed yet, and it won't be fixed for a while. It
+ requires the reprogramming of that entire section. If you wish to do that,
+ feel free to try and redo it.
+
+* Font selection:  The default font used is MS Gothic (MS ÉSÉVÉbÉN) with bolding and shadows enabled.  
+The font options are not currently functioning properly.  Attempts to change the font will result in 
+using the lowest quality, no-shadow, no bolding version of the selected font.  It is not possible to 
+revert back to the default font as set up without reinstalling the patch.
+
+* Line Overruns:  Luckily the game doesn't crash when a large chunk of text runs over the 3-lines 
+allocated to it.  It does, however, cause some odd corruption of the name tag box.  This is likely an 
+issue inside of rlbable, as this behavior doesn't appear on other VNs that share the same resources.  
+
+* Game refuses to load when starting up:  Usually just restarting the game is enough to fix most of these.  
+
+* Game refuses to load D&T: Usually just restarting the game is enough to fix this.  
+
+* Known Crash Issues: From the start-up screen, attempting to load a save on the first line of 
+July 14th will crash the game.  
+
+* D&T line-overruns:  The auto-line breaking used throughout the game doesn't work properly for D&T.
+We are working on either fixing it or adding in manual line breaks.
+
+* (this line depends on if skills make it in or not)  D&T skill cut-ins:  The skill cut-ins have caused 
+us a lot of issues becuase much of how it's positioned and displayed is embedded into xml code attached
+to the images as well as game code used to execute some semi-fancy display effects.  We've come up with
+a solution that looks much better in English, and are in the process of deploying it.  
+
+* There are some known errors in the D&T Translation.  We are reviewing everything once more.
+
+* D&T item name inconsistency:  There are a handful of item and skill images that are inconsistent with
+the text.  Some of this is intentional, due to space limits, but we are still working on fixing all the
+inconsistencies.  
+
+* D&T item puns:  The bane of translation effort, there are a frightful number of puns with the item 
+names and descriptions.  Figuring them all out of half the battle, trying to properly convey them the 
+other half. 
+ 
+* Some system message titles still in JP:  We've tried to catch everything, but there are some 
+occasional system messages (like if you try to close the program through alt+f4) that are still in 
+JP.
+
+_________________________________________________________________
+
+Credits:
+
+Doki Visual Novel Division:
+	
+    Project Leader:
+       Clannad Man
+	   
+    Translation:
+       NeWbY
+       Kuzu
+       Pandasu
+       |Bardiche|
+       Thaerin
+       egshady
+       sakura11hana
+       csds92
+       Kanade
+	   
+    Editing & Quality Control:
+       jakeman95
+       ryuu_zer0
+       BilliumMoto
+       rarely_upset
+       Delwack
+       Aieon (aka. Cronus)
+       EbilJennz
+       altazure
+       himie
+       Glis
+       Iarumas
+       Catharsis
+	   
+    Image Editing:
+       masat
+       shawurai
+       Clannad Man
+       Eliard
+       Pikokola
+       DFXLuna
+	   
+    Quality Control:
+       Loomy
+	   
+    Tools & Support:
+       Pheblas (Resource Compiling)
+       Polarem (Resource Compiling)
+       Sheeta (Resource Compiling)
+       Dys (Information Technology Infrastructure)
+       Kuzu (Support tools)
+       Delwack (Support tools)
+	   
+    Patches:
+       Polarem (Windows)
+       swiss (Linux/Mac)
+	
+    Script Programming & RLdev coding:
+       Polarem
+
+    Patch Beta Testers:
+       Elliott
+       HakumeiShiro
+       dan3dots
+       Ilmari_16
+       Unravel
+       Blazewardog
+       xMythycle
+       Assasin_Cross
+       Stefl1504
+       Sahasralah
+	   
+    Honorary Patch Beta Tester:
+       Juhachi
+	 
+	 
+    Doki Fansub Staff Contributors:
+	
+    Doki Founder:
+       Holo
+	   
+    Opening Video Typesetting, timing and Karoke:
+       Odinigh
+	   
+    Opening Video Karaoke (Original):
+       Pahndamonium
+	   
+    Opening Video Encoding:
+       Ixlone
+	   
+	 
+    Former Doki Staff Contributors:
+	
+    Former Project Leaders:
+       Cruxis
+       Tatsuya
+	   
+	
+    Translation:
+       Sky
+       Mr4eyeguy
+       Peekachew
+       Oldpier
+       Tatsuya
+
+    Editing:
+       p3cp3c
+       Calyrica
+	   
+    Image Editing:
+       Cruxis
+       Hiroto
+    
+    Quality Checker:
+       Calyrica
+	   
+    Coding (RLdev):
+       Cruxis
+       ShalDengeki
+	   
+    Tools & Support:
+       Cruxis (route map)
+       Lollipop (route map)
+     
+
+Baka-Tsuki Contributors:
+	
+    Baka-Tsuki Founder:
+       Thelastguardian
+    
+    Former Project Administrators:
+       ArchDemon
+       RadicalR
+       Karmainall
+	   
+    Graphics Translator:
+       TakaJun
+	   
+    Graphics Editor:
+       EchoMateria
+	   
+    Hacker:
+       ShalDengeki
+	   
+    Image Hosting:
+       Yorhel
+	   
+    SEEN Chart Formatter:
+      Onizuka-gto
+	  
+    RLdev Developer:
+       Haeleth
+	   
+    Translation:   
+       ArchDemon
+       Mr4eyeguy
+       Tatsuya
+       Nightjumper
+       SATOMI
+       HiagoX
+       Wrengear
+       Ilebur
+       AbstractBlueSky
+       kikyo423
+       ShadeShadows
+       Appztetra
+       Yummy
+       Suppish
+       Karmainall
+       Seitsuki
+       LF2005
+       Soulphalanx
+       Aleh
+       Gman
+       Kyoske
+       KittyCarnage
+       Sarenthenis
+       PanzerElement
+       Gpglssp
+       DanDanTheIdiot
+	   
+    Quality Control:  
+       Karmainall
+       Sean
+       Pchan105
+       Suppish
+       ManiacB
+       Assassindaman
+       Brine
+       StuntZero
+       SJCrew
+	   
+    "Spoiler-kun!" Project Mascot:
+       TomoyaX
+	   
+as well as the countless anonymous contributors who helped.	 
+
+_________________________________________________________________
+
+Doki Fansubs:
+
+http://doki.co/Tomoyo_After
+#Doki on rizon

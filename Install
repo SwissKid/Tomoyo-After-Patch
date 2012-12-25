@@ -1,0 +1,40 @@
+
+Linux Instructions:
+If GTK is installed (on most systems this is true), first attempt to run the
+"gtkinstall." If that doesn't work, try the cmdinstall. If that doesn't work
+either, follow the manual installation instructions.
+
+If GTK is not installed, it should be, but you can try the cmdinstall.
+
+OSX Instructions:
+The osxinstall script is not ready quite yet, though you're welcome to try it.
+Most likely you will have to run the osxcmdinstall script, though there may
+still be bugs in that. The manual install is your best bet.
+
+
+
+Manual Installation Instructions:
+This installer works by simply copying the files into the correct directories,
+and creating an executable to automatically run the RLVM command. This can be
+done manually by following these steps:
+    1: From the mounted CD of Tomoyo After copy:
+	bgm dat gan koe mov sys wav 
+	to a new directoy that you want to contain Tomoyo After
+    2: Rename those files to all caps, so they will be:
+	BGM DAT GAN KOE MOV SYS WAV 
+	(you will also have to do this to the subdirectrories, so that could end
+	up being a lot more work than planned. Read notes for an alternative
+	way)
+    3: From this directoy move SEEN.TXT, SEEN0728.TXT, GAMEEXE.INI, and the G00
+    and MOV folders into the 'installed' Tomyo After directory
+    4: Install the latest version of RLVM from the git to fix the issues with
+    weird backgrounds occasionally. If you don't care much about that (not game
+    breaking) you may use the binary on the site.
+    5: Execute RLVM and choose the directory. You're now playing the patched
+    version of Tomoyo After!
+
+NOTES: Rather than replace every file in the G00 directory, you may just look at
+the new g00 files and delete the similarly named originals. Also, the files that
+aren't going to be replaced (DAT, BGM, GAN, SYS, WAV) don't actually have to be
+changed to all caps. Neither do the folder directories. The only reason this is
+done is because the new files are all caps, and to facilitate drag-and-drop.

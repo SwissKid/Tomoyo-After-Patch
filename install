@@ -38,8 +38,8 @@ if [[ $shelltype == "interactive" ]]
     function yesno() {
 	read -p "$1? [y/n] " answer
 	case $answer in
-	    [Yy]*)echo "0"; return 0;;
-	    [Nn]*)echo "1"; return 1;;
+	    [Yy]*) echo "0"; return 0;;
+	    [Nn]*) echo "1"; return 1;;
 	    *)echo "$answer could not be understood. Interpreting as 'no'"; return 1;;
 	esac
     }
@@ -98,19 +98,19 @@ else
 fi
 
 which rlvm > /dev/null || crit "RLVM was not found installed on this system. Please install it before attempting to install the patch, as the patch won't work without it.\nRLVM can be found at http://www.elliotglaysher.org/rlvm/"
-preinstall=$(yesno "Do you already have Tomoyo After installed?")
-
+yesno "Do you already have Tomoyo After installed?"
+preinstall=$?
 #Install from Disc
-if [[ "$preinstall" == "0" ]]; then
+if [[ "$preinstall" == "1" ]]; then
     sayit "Please specify the location of the disk labeled 'Tomoyo After ~It's a Wonderful Life~'"
     installdisc=$(seldir "Tomoyo After Install Disc")
     [ -f "$installdisc/Seen.txt" ] || [[ -f "$installdisc/SEEN.TXT" ]] || crit "Your install location seems to be incorrect or you have a bad disc."
     sayit "Please specify the directory Tomoyo After should be installed into \n This creates a new directory of 'Tomoyo After' under whatever directory you specify" "--filename=~/";
     installloc=$(seldir "Destination Directory") || cancelled
     sayit "Tomoyo After will now be installed. This may take a while. Press OK to start the installtion." || cancelled
-    mkdir "$installloc/Tomoyo After/";
+    mkdir -p "$installloc/Tomoyo After/";
 	chmod +w "$installloc/Tomoyo After"
-	for i in `echo bgm dat dt00.dll Gameexe.ini g00 koe gan manual mov sys wav Seen.txt Tomoyo.ico`
+	for i in bgm dat dt00.dll Gameexe.ini g00 koe gan manual mov sys wav Tomoyo.ico
 	do
 	    cp -r "$installdisc/$i" "$installloc/Tomoyo After/" &
 	done
@@ -121,8 +121,8 @@ if [[ "$preinstall" == "0" ]]; then
 	while [[ $running == true ]]
 	do
 	    chmod +w -R "$installloc/Tomoyo After";
-	    some=$(sed -e "s/ .*$//" << `du -s "$installloc/Tomoyo After"`)
-	    let " progress = 100 * some / 2146664"
+	    some=$(du -s "$installloc/Tomoyo After" | sed -e "s/	.*$//")
+	    let " progress = 100 * $some / 2146664"
 	    echo $progress
 	    [[ "$progress" -eq 100 ]] && running=false
 	done
@@ -133,7 +133,7 @@ if [[ "$preinstall" == "0" ]]; then
 	while [[ $running == true ]]
 	do
 	    chmod +w -R "$installloc/Tomoyo After";
-	    some=$(sed -e "s/ .*$//" << `du -s "$installloc/Tomoyo After"`)
+	    some=$(du -s "$installloc/Tomoyo After" | sed -e "s/ .*$//" )
 	    let " progress = 100 * some / 2146664"
 	    printf "\r $progress % copied"
 	    [[ "$progress" -eq 100 ]] && running=false
@@ -164,7 +164,7 @@ cp msgothic.ttc "$fontdir"
 yesno "Do you want to continue installing the patch? (Last chance to back out)" || cancelled
 if [ -e "$tomodir/Seen.txt" ]; then
     
-    for i in "bgm dat gan koe mov sys wav Seen.txt"
+    for i in bgm dat gan g00 koe mov sys wav Seen.txt
     do
 	if [ -e "$tomodir/$i" ]; then
 	    j=$(upperthis $i)

@@ -15,6 +15,7 @@
 #		Stupid mac.
 #    This script is meant to install 
 #	Tomoyo After with Zenity
+#	Deprecated by install
 #######################################
 
 ##Zenity Functions (to make everything faster)

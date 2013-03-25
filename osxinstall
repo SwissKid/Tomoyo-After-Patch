@@ -7,175 +7,299 @@
 #zenit --error
 #2 types, warning and info, i want warning for error
 ##GONNA SET IT UP AS FUCTIONS
+###
 
-
-function dalert() {
+    #info dialog
+function sayit() {
 /usr/bin/osascript << EOT
 tell app "System Events"
     activate
     display alert "$1"
-	as warning
-	message "$2"
 end tell
 EOT
+}
+#Directory selection
+/usr/bin/osascript << EOT
+function seldir() {
+tell app "System Events"
+    activate
+    POSIX path of (choose folder with prompt "$1" default location alias "$2")
+end tell
+EOT
+}
+#critical error
+function crit() {
+/usr/bin/osascript << EOT
+tell app "System Events"
+    activate
+    display alert "$1" as warning message "$2"
+end tell
+EOT
+}
+function cancelled() {
+    sayit "Installation Cancelled"
+    exit 1
+}
+###
+
+
+##Yes no function
+#This outputs "Yes" or "No" (capitalization included)
+##DISREGARD changing to the one like the install script
+function yesno() {
+answer=$(/usr/bin/osascript << EOT
+tell app "System Events"
+    activate
+    display dialog "$1" button {"Yes","No"} default button 1
+end tell
+EOT
+)
+case ${answer#*:} in
+    [Yy]*)echo "0"; return 0;;
+    [Nn]*)echo "1"; return 1;;
+    *)echo "$answer could not be understood. Interpreting as 'no'"; return 1;;
+esac
 }
 
 ## MIGHT BE ABLE TO
-function choosefolder() {
-if [ -n "$1" ]
-/usr/bin/osascript << EOT
-tell app "System Events"
-    activate
-    quoted form of POSIX path of (choose folder with prompt "$1" default location alias "$2")
-end tell
-EOT
-else
-/usr/bin/osascript << EOT
-tell app "System Events"
-    activate
-    quoted form of POSIX path of (choose folder with prompt "$1" default location alias (path to home))
-end tell
-EOT
-fi
-}
 ##GONNA LEAVE THESE HERE!!!
 ##DESKTOP
 deskfolder=$(/usr/bin/osascript << EOT
 tell app "System Events"
-    quoted form of POSIX path of (path to desktop)
+    POSIX path of (path to desktop)
 end tell
 EOT)
 
 ##Fonts
 fontdir=$(/usr/bin/osascript << EOT
 tell app "System Events"
-    quoted form of POSIX path of (path to fonts)
+    POSIX path of (path to fonts)
 end tell
 EOT)
 
-which rlvm > /dev/null
-if [ "$?" = "1" ];
-   then
-   dalert "RLVM was not found installed on this system." "Please install it before attempting to install the patch, as the patch won't work without it.\nRLVM can be found at http://www.elliotglaysher.org/rlvm/"
-fi
-zenity --question \
---text="Do you already have Tomoyo After installed?"
-preinstall=$?
-#install disc
-if [ $preinstall -eq 1 ]; then
-    zenity --info --text="Please specify the location of 'Tomoyo After ~It's a Wonderful Life~'"
-    installdisc=$(choosefolder "Disc Locatation" "Volumes")
-    if [ -f "$installdisc/Seen.txt" ]; then
-	zenity --info --text="Please specify the directory Tomoyo After should be installed into \n This creates a new directory of 'Tomoyo After' under whatever directory you specify";
-    else
-	dalert "Installation not found" "Your install location seems to be incorrect or you have a bad disc."
-	exit 1
-    fi
-    installloc=$(choosefolder "Installation Directory")
-    if [ $? -eq 1 ];
-	then exit 0
-    fi
-    zenity --info --text="Tomoyo After will now be installed. This may take a while. Press OK to start the installtion."
-(
-running=1
-mkdir "$installloc/Tomoyo After/";
-	chmod +w "$installloc/Tomoyo After";
-	for i in `echo bgm dat dt00.dll Gameexe.ini g00 koe gan manual mov sys wav Seen.txt Tomoyo.ico`; 
-	    do cp -r "$installdisc/$i" "$installloc/Tomoyo After/" &
-	done
-    while [ $running -eq 1 ];
+
+preinstall=$(yesno "Do you already have Tomoyo After installed?")
+
+#Install from Disc
+if [[ "$preinstall" == "0" ]]; then
+    sayit "Please specify the location of the disk labeled 'Tomoyo After ~It's a Wonderful Life~'"
+    installdisc=$(seldir "Tomoyo After Install Disc")
+    [ -f "$installdisc/Seen.txt" ] || [[ -f "$installdisc/SEEN.TXT" ]] || crit "Your install location seems to be incorrect or you have a bad disc."
+    sayit "Please specify the directory Tomoyo After should be installed into \n This creates a new directory of 'Tomoyo After' under whatever directory you specify" "--filename=~/";
+    installloc=$(seldir "Destination Directory") || cancelled
+    sayit "Tomoyo After will now be installed. This may take a while. Press OK to start the installtion." || cancelled
+    mkdir "$installloc/Tomoyo After/";
+	chmod +w "$installloc/Tomoyo After"
+	for i in `echo bgm dat dt00.dll Gameexe.ini g00 koe gan manual mov sys wav Seen.txt Tomoyo.ico`
 	do
-	chmod +w -R "$installloc/Tomoyo After";
-	some=$(sed -e "s/ .*$//" <<< `du -s "$installloc/Tomoyo After"`)
-	let " progress = 100 * some / 2146664"
-	echo $progress
-	if [ "$progress" -eq 100 ]
-	    then running=0
-	fi
+	    cp -r "$installdisc/$i" "$installloc/Tomoyo After/" &
 	done
-	) |
-	##MAKE PRETTY PROGRESS BAR
-	zenity  --progress --title="Installing Tomoyo After" --text="Copying Neccessary Files" --percentage=0
-	    if [ "$?" = -1 ] ; 
-		then
-		zenity --error --text="Installation cancelled."
-		exit 1
-		fi; 
-	zenity --info --text="Your Tomoyo After installation is located at $installloc/Tomoyo After/. \n Press OK to continue to installing the patch.";
-	if [ $? -eq 1 ]; then 
-	    exit 1
-	fi;
-   else
-   sleep 0;
-fi;
+    if [[ $shelltype == "zenity" ]] 
+	then
+	(
+	running=true
+	while [[ $running == true ]]
+	do
+	    chmod +w -R "$installloc/Tomoyo After";
+	    some=$(sed -e "s/ .*$//" << `du -s "$installloc/Tomoyo After"`)
+	    let " progress = 100 * some / 2146664"
+	    echo $progress
+	    [[ "$progress" -eq 100 ]] && running=false
+	done
+	) | zenity --progress --title="Installing Tomoyo After" --text="Copying Neccessary Files" --percentage=0 || cancelled;
+    else
+	(
+	running=true
+	while [[ $running == true ]]
+	do
+	    chmod +w -R "$installloc/Tomoyo After";
+	    some=$(sed -e "s/ .*$//" << `du -s "$installloc/Tomoyo After"`)
+	    let " progress = 100 * some / 2146664"
+	    printf "\r $progress % copied"
+	    [[ "$progress" -eq 100 ]] && running=false
+	done)
+    fi
+	sayit "Your Tomoyo After installation is located at $installloc/Tomoyo After/. \n Press OK to continue to installing the patch." || cancelled
+    tomodir="$installloc/Tomoyo After"
 #End Install Disc
-#Getting the installation directoy
-if [ $preinstall -eq 1 ]; then
-   tomodir="$installloc/Tomoyo After"
 else
-   ## NEED TO DISPLAY MESSAGE, NEW TODO
-    "Please specify the location of your Tomoyo After installation \n (If installed through wine it should be ~/.wine/drive_c/KEY/Tomoyo After/"
-   tomodir=$(choosefolder "Installation of Tomoyo After")
-   #probably a cleaner way to do this ignoring capitilization
-   if [ -e "$tomodir/Gameexe.ini" ]; then
-   	mv "$tomodir/Gameexe.ini" "$tomodir/GAMEEXE.INI"
-   else 
-   	if [ -e "$tomodir/GAMEEXE.INI" ]; then
-	   sleep 0
-	else
-#Failed check
-	   daleter "Gameexe.ini Not Found" "This installer cannot find Gameexe.ini or GAMEEXE.INI inside $tomodir. Please doublecheck that you specified the correct directory."
-	   exit 1
-	fi
-   fi
+    sayit "Please specify the location of your Tomoyo After installation \n (If installed through wine it should be ~/.wine/drive_c/KEY/Tomoyo After/"  || cancelled
+    tomodir=$(seldir "Installed Directory")
+    #probably a cleaner way to do this ignoring capitilization, but oh well
+    [ -e "$tomodir/Gameexe.ini" ] &&	mv "$tomodir/Gameexe.ini" "$tomodir/GAMEEXE.INI"
+    [ -e "$tomodir/GAMEEXE.INI" ] || crit "This installer cannot find Gameexe.ini or GAMEEXE.INI inside $tomodir.\n Please doublecheck that you specified the correct directory."
 fi
 chmod +rw -R "$tomodir"
-#End of Installation Directory finding, now to copy the patch
+#Done with their directory
+
+##End of Installation Directory finding, now to copy the patch
+
 #Font first
-##Mac users can just have it installed, it won't hurt them
-
-
+sayit "A font chosen by the designers of the patch will now be placed on your system. Please choose a directory for it to be placed into."
+fontdir=$(seldir "Font Directory" "--filename=~/.rlvm/" || cancelled)
 cp msgothic.ttc "$fontdir"
 
 
-#Final time asking
-zenity --question --text="Do you want to continue installing the patch? \n (Last chance to back out)"
-if [ "$?" -eq 1 ];
-   then exit 0;
-fi
-##WILL NEED EDITING FOR THE REAL FILES
+#Final time asking before overwriting
+yesno "Do you want to continue installing the patch? (Last chance to back out)" || cancelled
 if [ -e "$tomodir/Seen.txt" ]; then
-   m="bgm dat gan koe mov sys wav Seen.txt"
-   for i in `echo $m`; do
-      if [ -e "$tomodir/$i" ]; then
-         j=$(echo $i | tr '[:lower:]' '[:upper:]' )
-	 mv "$tomodir/$i" "$tomodir/$j"
-     fi
-   done
-
-
-chmod +rw -R "$tomodir"
+    
+    for i in "bgm dat gan koe mov sys wav Seen.txt"
+    do
+	if [ -e "$tomodir/$i" ]; then
+	    j=$(upperthis $i)
+	    mv "$tomodir/$i" "$tomodir/$j"
+	fi
+    done
+    chmod +rw -R "$tomodir"
    
-   m="SEEN* rlBabel.dll 1.3.5.4.map GAMEEXE.INI G00 MOV"
-   for i in `echo $m`;
+   for i in "SEEN* rlBabel.dll 1.3.5.4.map GAMEEXE.INI G00 MOV"
       do cp $i "$tomodir" -r
    done
 fi
 
 #Nice desktop installer
 ##TO DO make it purty
-zenity --question --text="Do you want a desktop launcher to be installed to run Tomoyo After?"
-if [ "$?" -eq "0" ];
-    then
-    echo -e '#!/bin/bash' " \nrlvm --font \042"$fontdir/msgothic.ttc"\042 \042"$tomodir"\042 " > $deskfolder/TomoyoAfter
+if [ -e ~/Desktop ];
+then
+    yesno "Do you want a desktop launcher to be installed to run Tomoyo After?" && (
+    echo -e '#!/bin/bash' " \nrlvm --font \042"$fontdir/msgothic.ttc"\042 \042"$tomodir"\042 " > ~/Desktop/TomoyoAfter
     chmod +x ~/Desktop/TomoyoAfter
-    zenity --info --text="A shortcut to run Tomoyo After has been placed on your desktop. If you wish to run Tomoyo After via the command line please execute: \n rlvm --font \042 $fontdir/msgothic.ttc\042 \042 $tomodir \042 "
+    sayit "A shortcut to run Tomoyo After has been placed on your desktop. If you wish to run Tomoyo After via the command line please execute: \n rlvm --font \042 $fontdir/msgothic.ttc\042 \042 $tomodir \042 "
+    )
 fi
 
 
-zenity --info --text="Thank you for using Doki\'s Tomoyo After installer!"
-#EOF
+sayit "Thank you for using Doki\'s Tomoyo After installer!"
+#EOF, clean exit
 exit 0
+
+
+
+###Actual Program -- OLD
+#which rlvm > /dev/null
+#if [ "$?" = "1" ];
+#   then
+#   dalert "RLVM was not found installed on this system." "Please install it before attempting to install the patch, as the patch won't work without it.\nRLVM can be found at http://www.elliotglaysher.org/rlvm/"
+#fi
+#zenity --question \
+#--text="Do you already have Tomoyo After installed?"
+#preinstall=$?
+##install disc
+#if [ $preinstall -eq 1 ]; then
+#    zenity --info --text="Please specify the location of 'Tomoyo After ~It's a Wonderful Life~'"
+#    installdisc=$(choosefolder "Disc Locatation" "Volumes")
+#    if [ -f "$installdisc/Seen.txt" ]; then
+#	zenity --info --text="Please specify the directory Tomoyo After should be installed into \n This creates a new directory of 'Tomoyo After' under whatever directory you specify";
+#    else
+#	dalert "Installation not found" "Your install location seems to be incorrect or you have a bad disc."
+#	exit 1
+#    fi
+#    installloc=$(choosefolder "Installation Directory")
+#    if [ $? -eq 1 ];
+#	then exit 0
+#    fi
+#    zenity --info --text="Tomoyo After will now be installed. This may take a while. Press OK to start the installtion."
+#(
+#running=1
+#mkdir "$installloc/Tomoyo After/";
+#	chmod +w "$installloc/Tomoyo After";
+#	for i in `echo bgm dat dt00.dll Gameexe.ini g00 koe gan manual mov sys wav Seen.txt Tomoyo.ico`; 
+#	    do cp -r "$installdisc/$i" "$installloc/Tomoyo After/" &
+#	done
+#    while [ $running -eq 1 ];
+#	do
+#	chmod +w -R "$installloc/Tomoyo After";
+#	some=$(sed -e "s/ .*$//" <<< `du -s "$installloc/Tomoyo After"`)
+#	let " progress = 100 * some / 2146664"
+#	echo $progress
+#	if [ "$progress" -eq 100 ]
+#	    then running=0
+#	fi
+#	done
+#	) |
+#	##MAKE PRETTY PROGRESS BAR
+#	zenity  --progress --title="Installing Tomoyo After" --text="Copying Neccessary Files" --percentage=0
+#	    if [ "$?" = -1 ] ; 
+#		then
+#		zenity --error --text="Installation cancelled."
+#		exit 1
+#		fi; 
+#	zenity --info --text="Your Tomoyo After installation is located at $installloc/Tomoyo After/. \n Press OK to continue to installing the patch.";
+#	if [ $? -eq 1 ]; then 
+#	    exit 1
+#	fi;
+#   else
+#   sleep 0;
+#fi;
+##End Install Disc
+##Getting the installation directoy
+#if [ $preinstall -eq 1 ]; then
+#   tomodir="$installloc/Tomoyo After"
+#else
+#   ## NEED TO DISPLAY MESSAGE, NEW TODO
+#    "Please specify the location of your Tomoyo After installation \n (If installed through wine it should be ~/.wine/drive_c/KEY/Tomoyo After/"
+#   tomodir=$(choosefolder "Installation of Tomoyo After")
+#   #probably a cleaner way to do this ignoring capitilization
+#   if [ -e "$tomodir/Gameexe.ini" ]; then
+#   	mv "$tomodir/Gameexe.ini" "$tomodir/GAMEEXE.INI"
+#   else 
+#   	if [ -e "$tomodir/GAMEEXE.INI" ]; then
+#	   sleep 0
+#	else
+##Failed check
+#	   daleter "Gameexe.ini Not Found" "This installer cannot find Gameexe.ini or GAMEEXE.INI inside $tomodir. Please doublecheck that you specified the correct directory."
+#	   exit 1
+#	fi
+#   fi
+#fi
+#chmod +rw -R "$tomodir"
+##End of Installation Directory finding, now to copy the patch
+##Font first
+###Mac users can just have it installed, it won't hurt them
+#
+#
+#cp msgothic.ttc "$fontdir"
+#
+#
+##Final time asking
+#zenity --question --text="Do you want to continue installing the patch? \n (Last chance to back out)"
+#if [ "$?" -eq 1 ];
+#   then exit 0;
+#fi
+###WILL NEED EDITING FOR THE REAL FILES
+#if [ -e "$tomodir/Seen.txt" ]; then
+#   m="bgm dat gan koe mov sys wav Seen.txt"
+#   for i in `echo $m`; do
+#      if [ -e "$tomodir/$i" ]; then
+#         j=$(echo $i | tr '[:lower:]' '[:upper:]' )
+#	 mv "$tomodir/$i" "$tomodir/$j"
+#     fi
+#   done
+#
+#
+#chmod +rw -R "$tomodir"
+#   
+#   m="SEEN* rlBabel.dll 1.3.5.4.map GAMEEXE.INI G00 MOV"
+#   for i in `echo $m`;
+#      do cp $i "$tomodir" -r
+#   done
+#fi
+#
+##Nice desktop installer
+###TO DO make it purty
+#zenity --question --text="Do you want a desktop launcher to be installed to run Tomoyo After?"
+#if [ "$?" -eq "0" ];
+#    then
+#    echo -e '#!/bin/bash' " \nrlvm --font \042"$fontdir/msgothic.ttc"\042 \042"$tomodir"\042 " > $deskfolder/TomoyoAfter
+#    chmod +x ~/Desktop/TomoyoAfter
+#    zenity --info --text="A shortcut to run Tomoyo After has been placed on your desktop. If you wish to run Tomoyo After via the command line please execute: \n rlvm --font \042 $fontdir/msgothic.ttc\042 \042 $tomodir \042 "
+#fi
+#
+#
+#zenity --info --text="Thank you for using Doki\'s Tomoyo After installer!"
+##EOF
+#exit 0
 
 
 # vim: tw=0 sw=4 : 

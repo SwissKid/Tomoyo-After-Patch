@@ -183,9 +183,9 @@ fi
 if [ -e ~/Desktop ];
 then
     yesno "Do you want a desktop launcher to be installed to run Tomoyo After?" && (
-    echo -e '#!/bin/bash' " \nrlvm --font \042"$fontdir/msgothic.ttc"\042 \042"$tomodir"\042 " > ~/Desktop/TomoyoAfter
+    echo -e '#!/bin/bash' "\nrlvm --font \042"$fontdir/msgothic.ttc"\042 \042"$tomodir"\042" > ~/Desktop/TomoyoAfter
     chmod +x ~/Desktop/TomoyoAfter
-    sayit "A shortcut to run Tomoyo After has been placed on your desktop. If you wish to run Tomoyo After via the command line please execute: \n rlvm --font \042 $fontdir/msgothic.ttc\042 \042 $tomodir \042 "
+    sayit "A shortcut to run Tomoyo After has been placed on your desktop. If you wish to run Tomoyo After via the command line please execute: \nrlvm --font \042$fontdir/msgothic.ttc\042 \042$tomodir\042"
     )
 fi
 

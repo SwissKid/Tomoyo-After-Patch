@@ -173,7 +173,7 @@ if [ -e "$tomodir/Seen.txt" ]; then
     done
     chmod +rw -R "$tomodir"
    
-   for i in "SEEN* rlBabel.dll 1.3.5.4.map GAMEEXE.INI G00 MOV"
+   for i in "SEEN.TXT SEEN0702.TXT rlBabel.dll 1.3.5.4.map GAMEEXE.INI G00 MOV"
       do cp $i "$tomodir" -r
    done
 fi

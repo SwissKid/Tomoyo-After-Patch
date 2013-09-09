@@ -33,7 +33,7 @@ you specify"
    chmod +w "$installloc/Tomoyo After";
    echo "Installing, may take some time"
    for i in `echo bgm dat dt00.dll Gameexe.ini g00 koe gan manual mov sys wav Seen.txt Tomoyo.ico`; 
-      do cp -r "$installdisc/$i" "$installloc/Tomoyo After/" &
+      do cp -R "$installdisc/$i" "$installloc/Tomoyo After/" &
    done
 # No progress bar for cmd install
 #   while [ $running -eq 1 ];
@@ -72,7 +72,7 @@ else
       fi
    fi
 fi
-chmod +rw -R "$tomodir"
+chmod +rwX "$tomodir"
 #End of Installation Directory finding, now to copy the patch
 #Font first
 echo -e "A font chosen by the designers of the patch will now be placed on your
@@ -98,17 +98,18 @@ cp msgothic.ttc "$fontdir"
 ##WILL NEED EDITING FOR THE REAL FILES
 ##ASSUMING A CONSTANT NAMING SCHEME. CAN BE BROKEN
 if [ -e "$tomodir/Seen.txt" ]; then
-   m="bgm dat gan koe mov sys wav Seen.txt"
+chmod +rwX "$tomodir"   
+m="bgm dat gan koe mov sys wav Seen.txt"
    for i in `echo $m`; do
       if [ -e "$tomodir/$i" ]; then
 	 j=$(echo $i | tr '[:lower:]' '[:upper:]' )
-	 mv "$tomodir/$i" "$tomodir/$j"
+	 mv -f "$tomodir/$i" "$tomodir/$j"
       fi
    done
-   chmod +rw -R "$tomodir"
+   
    m="SEEN* rlBabel.dll 1.3.5.4.map GAMEEXE.INI G00 MOV"
    for i in `echo $m`;
-      do cp -r $i "$tomodir"
+	     do cp -R $i "$tomodir"
    done
 fi
 
@@ -133,6 +134,3 @@ echo "In order to play Tomoyo After, you must install RLVM, and choose $tomodir 
 echo "Thank you for using Doki's Tomoyo After installer!"
 #EOF
 exit 0
-
-
-# vim: set sw=3 tw=80  #

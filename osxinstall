@@ -56,9 +56,9 @@ end tell
 EOT
 )
 case ${answer#*:} in
-    [Yy]*)echo "1"; return 1;;
-    [Nn]*)echo "0"; return 0;;
-    *)echo "$answer could not be understood. Interpreting as 'no'"; return 0;;
+    [Yy]*)echo "1"; return 0;;
+    [Nn]*)echo "0"; return 1;;
+    *)echo "$answer could not be understood. Interpreting as 'no'"; return 1;;
 esac
 }
 
@@ -86,7 +86,7 @@ if [[ "$preinstall" == "0" ]]; then
     sayit "Please specify the location of the disk labeled 'Tomoyo After ~It's a Wonderful Life~'"
     installdisc=$(seldir "Tomoyo After Install Disc")
     [ -f "$installdisc/Seen.txt" ] || [[ -f "$installdisc/SEEN.TXT" ]] || crit "Your install location seems to be incorrect or you have a bad disc."
-    sayit "Please specify the directory Tomoyo After should be installed into \n This creates a new directory of 'Tomoyo After' under whatever directory you specify" "--filename=~/";
+    sayit "Please specify the directory Tomoyo After should be installed into \n This creates a new directory of 'Tomoyo After' under whatever directory you specify" "~/";
     installloc=$(seldir "Destination Directory") || cancelled
     sayit "Tomoyo After will now be installed. This may take a while. Press OK to start the installtion." || cancelled
     mkdir "$installloc/Tomoyo After/";
@@ -112,7 +112,7 @@ chmod +rw -R "$tomodir"
 
 #Font first
 sayit "A font chosen by the designers of the patch will now be placed on your system. Please choose a directory for it to be placed into."
-fontdir=$(seldir "Font Directory" "--filename=~/.rlvm/" || cancelled)
+fontdir=$(seldir "Font Directory" "~/.rlvm/" || cancelled)
 cp msgothic.ttc "$fontdir"
 
 

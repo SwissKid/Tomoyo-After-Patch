@@ -5,12 +5,8 @@
 ##GONNA SET IT UP AS FUCTIONS
 ###
 
-#Case
-function upperthis(){
-   echo $@ | tr [:lower:] [:upper:]
-}
 
-    #info dialog
+#info dialog
 function sayit() {
 /usr/bin/osascript << EOT
 tell app "System Events"
@@ -50,10 +46,18 @@ EOT
 }
 function cancelled() {
     sayit "Installation Cancelled"
-    exit 1
+    kill -s TERM $TOP_PID
 }
 ###
 
+#Force exit on error code 1
+trap "exit 1" TERM
+export TOP_PID=$$
+
+#Case
+function upperthis(){
+   echo $@ | tr [:lower:] [:upper:]
+}
 
 ##Yes no function
 #This outputs "Yes" or "No" (capitalization included)
@@ -97,7 +101,7 @@ preinstall=$(yesno "Do you already have Tomoyo After installed?")
 #Install from Disc
 if [[ "$preinstall" == "0" ]]; then
     sayit "Please specify the location of the disk labeled 'Tomoyo After ~It's a Wonderful Life~'"
-    installdisc=$(seldir "Tomoyo After Install Disc")
+    installdisc=$(seldir "Tomoyo After Install Disc") || cancelled
     [ -f "$installdisc/Seen.txt" ] || [[ -f "$installdisc/SEEN.TXT" ]] || crit "Your install location seems to be incorrect or you have a bad disc."
     sayit "Please specify the directory Tomoyo After should be installed into \n This creates a new directory of 'Tomoyo After' under whatever directory you specify" "~/";
     installloc=$(seldir "Destination Directory") || cancelled
@@ -113,7 +117,7 @@ if [[ "$preinstall" == "0" ]]; then
 #End Install Disc
 else
     sayit "Please specify the location of your Tomoyo After installation \n (If installed through wine it should be ~/.wine/drive_c/KEY/Tomoyo After/"  || cancelled
-    tomodir=$(seldir "Installed Directory" "~/.wine/drive_c/KEY/Tomoyo After/")
+    tomodir=$(seldir "Installed Directory" "~/.wine/drive_c/KEY/Tomoyo After/") || cancelled
     #probably a cleaner way to do this ignoring capitilization, but oh well
     [ -e "$tomodir/Gameexe.ini" ] &&	mv -f "$tomodir/Gameexe.ini" "$tomodir/GAMEEXE.INI"
     [ -e "$tomodir/GAMEEXE.INI" ] || crit "This installer cannot find Gameexe.ini or GAMEEXE.INI inside $tomodir.\n Please doublecheck that you specified the correct directory."
@@ -125,7 +129,7 @@ chmod -R +rwX "$tomodir"
 
 #Font first
 sayit "A font chosen by the designers of the patch will now be placed on your system. Please choose a directory for it to be placed into."
-fontdir=$(seldir "Font Directory" "~/.rlvm/" || cancelled)
+fontdir=$(seldir "Font Directory" "~/.rlvm/") || cancelled
 cp msgothic.ttc "$fontdir"
 
 

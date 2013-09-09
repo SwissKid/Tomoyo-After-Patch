@@ -21,10 +21,13 @@ function seldir() {
 tell app "System Events"
     activate
     if "$2" is "" then
-    POSIX path of (choose folder with prompt "$1" default location (path to my home folder))
-    else
-    POSIX path of (choose folder with prompt "$1" default location "$2")
-    end if    
+		POSIX path of (choose folder with prompt "$1" default location (path to my home folder))
+	else if "~" is in "$2" then
+		set temppath to do shell script "echo $2 | sed 's/~//g'"
+		POSIX path of (choose folder with prompt "$1" default location temppath)
+	else
+		POSIX path of (choose folder with prompt "$1" default location "$2")
+	end if
 end tell
 EOT
 }
@@ -90,12 +93,12 @@ if [[ "$preinstall" == "0" ]]; then
     [ -f "$installdisc/Seen.txt" ] || [[ -f "$installdisc/SEEN.TXT" ]] || crit "Your install location seems to be incorrect or you have a bad disc."
     sayit "Please specify the directory Tomoyo After should be installed into \n This creates a new directory of 'Tomoyo After' under whatever directory you specify" "~/";
     installloc=$(seldir "Destination Directory") || cancelled
-    sayit "Tomoyo After will now be installed. This may take a while. Press OK to start the installtion." || cancelled
+    sayit "Tomoyo After will now be installed. This may take a while. Press OK to start the installation." || cancelled
     mkdir "$installloc/Tomoyo After/";
 	chmod +w "$installloc/Tomoyo After"
 	for i in bgm dat dt00.dll Gameexe.ini g00 koe gan manual mov sys wav Seen.txt Tomoyo.ico
 	do
-	    cp -r "$installdisc/$i" "$installloc/Tomoyo After/" &
+	    cp -R "$installdisc/$i" "$installloc/Tomoyo After/" &
 	done
     sayit "Your Tomoyo After installation is located at $installloc/Tomoyo After/. \n Press OK to continue to installing the patch." || cancelled
     tomodir="$installloc/Tomoyo After"
@@ -104,10 +107,10 @@ else
     sayit "Please specify the location of your Tomoyo After installation \n (If installed through wine it should be ~/.wine/drive_c/KEY/Tomoyo After/"  || cancelled
     tomodir=$(seldir "Installed Directory")
     #probably a cleaner way to do this ignoring capitilization, but oh well
-    [ -e "$tomodir/Gameexe.ini" ] &&	mv "$tomodir/Gameexe.ini" "$tomodir/GAMEEXE.INI"
+    [ -e "$tomodir/Gameexe.ini" ] &&	mv -f "$tomodir/Gameexe.ini" "$tomodir/GAMEEXE.INI"
     [ -e "$tomodir/GAMEEXE.INI" ] || crit "This installer cannot find Gameexe.ini or GAMEEXE.INI inside $tomodir.\n Please doublecheck that you specified the correct directory."
 fi
-chmod +rw -R "$tomodir"
+chmod -R +rwX "$tomodir"
 #Done with their directory
 
 ##End of Installation Directory finding, now to copy the patch
@@ -126,13 +129,13 @@ if [ -e "$tomodir/Seen.txt" ]; then
     do
 	if [ -e "$tomodir/$i" ]; then
 	    j=$(upperthis $i)
-	    mv "$tomodir/$i" "$tomodir/$j"
+	    mv -f "$tomodir/$i" "$tomodir/$j"
 	fi
     done
-    chmod +rw -R "$tomodir"
+    chmod -R +rwX "$tomodir"
    
-   for i in "SEEN*" rlBabel.dll 1.3.5.4.map GAMEEXE.INI G00 MOV
-      do cp $i "$tomodir" -r
+   for i in "SEEN* rlBabel.dll 1.3.5.4.map GAMEEXE.INI G00 MOV"
+      do cp -R $i "$tomodir"
    done
 fi
 
@@ -149,7 +152,7 @@ fi
 #fi
 
 
-sayit "Thank you for using Doki\'s Tomoyo After installer!"
+sayit "Thank you for using Doki's Tomoyo After installer!"
 #EOF, clean exit
 exit 0
 
@@ -184,11 +187,11 @@ exit 0
 #mkdir "$installloc/Tomoyo After/";
 #	chmod +w "$installloc/Tomoyo After";
 #	for i in `echo bgm dat dt00.dll Gameexe.ini g00 koe gan manual mov sys wav Seen.txt Tomoyo.ico`; 
-#	    do cp -r "$installdisc/$i" "$installloc/Tomoyo After/" &
+#	    do cp -R "$installdisc/$i" "$installloc/Tomoyo After/" &
 #	done
 #    while [ $running -eq 1 ];
 #	do
-#	chmod +w -R "$installloc/Tomoyo After";
+#	chmod +w "$installloc/Tomoyo After";
 #	some=$(sed -e "s/ .*$//" <<< `du -s "$installloc/Tomoyo After"`)
 #	let " progress = 100 * some / 2146664"
 #	echo $progress
@@ -232,7 +235,7 @@ exit 0
 #	fi
 #   fi
 #fi
-#chmod +rw -R "$tomodir"
+#chmod -R +rwX "$tomodir"
 ##End of Installation Directory finding, now to copy the patch
 ##Font first
 ###Mac users can just have it installed, it won't hurt them
@@ -257,11 +260,11 @@ exit 0
 #   done
 #
 #
-#chmod +rw -R "$tomodir"
+#chmod -R +rwX "$tomodir"
 #   
 #   m="SEEN* rlBabel.dll 1.3.5.4.map GAMEEXE.INI G00 MOV"
 #   for i in `echo $m`;
-#      do cp $i "$tomodir" -r
+#      do cp -R $i "$tomodir"
 #   done
 #fi
 #

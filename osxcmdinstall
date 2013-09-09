@@ -108,7 +108,7 @@ if [ -e "$tomodir/Seen.txt" ]; then
    chmod +rw -R "$tomodir"
    m="SEEN* rlBabel.dll 1.3.5.4.map GAMEEXE.INI G00 MOV"
    for i in `echo $m`;
-      do cp $i "$tomodir" -r
+      do cp -r $i "$tomodir"
    done
 fi
 

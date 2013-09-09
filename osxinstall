@@ -5,6 +5,11 @@
 ##GONNA SET IT UP AS FUCTIONS
 ###
 
+#Case
+function upperthis(){
+   echo $@ | tr [:lower:] [:upper:]
+}
+
     #info dialog
 function sayit() {
 /usr/bin/osascript << EOT

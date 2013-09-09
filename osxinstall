@@ -27,11 +27,13 @@ tell app "System Events"
     activate
     if "$2" is "" then
 		POSIX path of (choose folder with prompt "$1" default location (path to my home folder))
-	else if "~" is in "$2" then
-		set temppath to do shell script "echo $2 | sed 's/~//g'"
-		POSIX path of (choose folder with prompt "$1" default location temppath)
 	else
-		POSIX path of (choose folder with prompt "$1" default location "$2")
+		set temppath to do shell script "echo $2"
+		if exists folder temppath then
+			POSIX path of (choose folder with prompt "$1" default location temppath)
+			else
+			POSIX path of (choose folder with prompt "$1" default location (path to my home folder))
+		end if
 	end if
 end tell
 EOT
@@ -111,7 +113,7 @@ if [[ "$preinstall" == "0" ]]; then
 #End Install Disc
 else
     sayit "Please specify the location of your Tomoyo After installation \n (If installed through wine it should be ~/.wine/drive_c/KEY/Tomoyo After/"  || cancelled
-    tomodir=$(seldir "Installed Directory")
+    tomodir=$(seldir "Installed Directory" "~/.wine/drive_c/KEY/Tomoyo After/")
     #probably a cleaner way to do this ignoring capitilization, but oh well
     [ -e "$tomodir/Gameexe.ini" ] &&	mv -f "$tomodir/Gameexe.ini" "$tomodir/GAMEEXE.INI"
     [ -e "$tomodir/GAMEEXE.INI" ] || crit "This installer cannot find Gameexe.ini or GAMEEXE.INI inside $tomodir.\n Please doublecheck that you specified the correct directory."

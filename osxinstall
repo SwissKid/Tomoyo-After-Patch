@@ -19,7 +19,12 @@ function seldir() {
 /usr/bin/osascript << EOT
 tell app "System Events"
     activate
-    POSIX path of (choose folder with prompt "$1" default location alias "$2")
+    if "$2" is "" then
+    POSIX path of (choose folder with prompt "$1" default location (path to my home folder))
+    else
+    POSIX path of (choose folder with prompt "$1" default location "$2")
+    end if
+    
 end tell
 EOT
 }
@@ -46,14 +51,14 @@ function yesno() {
 answer=$(/usr/bin/osascript << EOT
 tell app "System Events"
     activate
-    display dialog "$1" button {"Yes","No"} default button 1
+    return display dialog "$1" buttons {"Yes","No"} default button 1
 end tell
 EOT
 )
 case ${answer#*:} in
-    [Yy]*)echo "0"; return 0;;
-    [Nn]*)echo "1"; return 1;;
-    *)echo "$answer could not be understood. Interpreting as 'no'"; return 1;;
+    [Yy]*)echo "1"; return 1;;
+    [Nn]*)echo "0"; return 0;;
+    *)echo "$answer could not be understood. Interpreting as 'no'"; return 0;;
 esac
 }
 

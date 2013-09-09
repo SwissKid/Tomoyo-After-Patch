@@ -12,6 +12,7 @@ tell app "System Events"
     activate
     display alert "$1"
 end tell
+return
 EOT
 }
 #Directory selection
@@ -23,8 +24,7 @@ tell app "System Events"
     POSIX path of (choose folder with prompt "$1" default location (path to my home folder))
     else
     POSIX path of (choose folder with prompt "$1" default location "$2")
-    end if
-    
+    end if    
 end tell
 EOT
 }
@@ -35,6 +35,7 @@ tell app "System Events"
     activate
     display alert "$1" as warning message "$2"
 end tell
+return
 EOT
 }
 function cancelled() {
@@ -53,6 +54,7 @@ tell app "System Events"
     activate
     return display dialog "$1" buttons {"Yes","No"} default button 1
 end tell
+return
 EOT
 )
 case ${answer#*:} in

@@ -88,7 +88,8 @@ tell app "System Events"
 end tell
 EOT)
 
-
+basedir=$(dirname $0)
+cd $basedir
 preinstall=$(yesno "Do you already have Tomoyo After installed?")
 
 #Install from Disc
